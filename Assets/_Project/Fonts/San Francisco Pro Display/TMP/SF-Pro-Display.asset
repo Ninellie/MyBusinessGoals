@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc5b29e5201af647aac70cb79207ae9, type: 3}
+  m_Name: SF-Pro-Display
+  m_EditorClassIdentifier: 
+  _fonts:
+  - Name: SF-Pro-Display-Black SDF
+    Font: {fileID: 11400000, guid: d221543d11e1f474e8af345d8ec13014, type: 2}
+  - Name: SF-Pro-Display-BlackItalic SDF
+    Font: {fileID: 11400000, guid: 05023e750df71884f9b9ffb2bd989a55, type: 2}
+  - Name: SF-Pro-Display-Bold SDF
+    Font: {fileID: 11400000, guid: 0e33e1e042a118b4f89c91ea97758130, type: 2}
+  - Name: SF-Pro-Display-BoldItalic SDF
+    Font: {fileID: 11400000, guid: 1ea18f0bd968b7743820a1f9fff9bdcf, type: 2}
+  - Name: SF-Pro-Display-Heavy SDF
+    Font: {fileID: 11400000, guid: 043770c611ce2094c995148f810a5c38, type: 2}
+  - Name: SF-Pro-Display-HeavyItalic SDF
+    Font: {fileID: 11400000, guid: 4d8814e0882a2e940a293620eaec5c04, type: 2}
+  - Name: SF-Pro-Display-Light SDF
+    Font: {fileID: 11400000, guid: b36cba8c51ba66c49b6bda19d9a48b0c, type: 2}
+  - Name: SF-Pro-Display-LightItalic SDF
+    Font: {fileID: 11400000, guid: 1e4d0d86dfc30664a8d0b3dbf1dc0f98, type: 2}
+  - Name: SF-Pro-Display-Medium SDF
+    Font: {fileID: 11400000, guid: 79c3b42376de8404c864412693d17ac8, type: 2}
+  - Name: SF-Pro-Display-MediumItalic SDF
+    Font: {fileID: 11400000, guid: 3614ca6f9e81d2a47ba1285b1deee654, type: 2}
+  - Name: SF-Pro-Display-Regular SDF
+    Font: {fileID: 11400000, guid: 8232e4d64a2e9f54abaf9c8b1aa1fbbe, type: 2}
+  - Name: SF-Pro-Display-RegularItalic SDF
+    Font: {fileID: 11400000, guid: 99a9a06d78d27674fa35e4ea4ed4f023, type: 2}
+  - Name: SF-Pro-Display-Semibold SDF
+    Font: {fileID: 11400000, guid: 5ad3ee1edba477e4281295f7d2fb8065, type: 2}
+  - Name: SF-Pro-Display-SemiboldItalic SDF
+    Font: {fileID: 11400000, guid: 13877cb18b55a794a968de21d0282a16, type: 2}
+  - Name: SF-Pro-Display-Thin SDF
+    Font: {fileID: 11400000, guid: 18ea1b98951994141a2b66e8567a3d66, type: 2}
+  - Name: SF-Pro-Display-ThinItalic SDF
+    Font: {fileID: 11400000, guid: 0ab02e4eefb5a9547a8bc30a81feb177, type: 2}
+  - Name: SF-Pro-Display-Ultralight SDF
+    Font: {fileID: 11400000, guid: 5d0ed4e574bdb2446993003c47e5f5d9, type: 2}
+  - Name: SF-Pro-Display-UltralightItalic SDF
+    Font: {fileID: 11400000, guid: d0abae5f11311024d8d8afe411ace18e, type: 2}
