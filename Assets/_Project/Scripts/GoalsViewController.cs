@@ -16,22 +16,33 @@ public class GoalsViewController : MonoBehaviour
     [SerializeField] private GoalDisplayScroll display;
     [SerializeField] private GoalFormController inputForm;
     [SerializeField] private CalendarScroll calendar;
+    [SerializeField] private GoalsSearch goalsSearch;
     
     [Header("Panels")]
     [SerializeField] private GameObject emptyGoalsPanel;
-    [SerializeField] private GameObject emptyAllGoalsPanel;
-    [SerializeField] private GameObject allGoalsInitialPanel;
+    [SerializeField] private GameObject nothingWasFoundPanel;
+    //[SerializeField] private GameObject allGoalsInitialPanel;
     [SerializeField] private GameObject tabBar;
     [SerializeField] private GameObject goalForm;
     [SerializeField] private GameObject displayBar;
+    [SerializeField] private GameObject topIndicatorsBar;
+    [SerializeField] private GameObject mainMenuView;
     
     [SerializeField] private List<GameObject> calendarViewObjects;
     [SerializeField] private List<GameObject> allGoalsViewObjects;
+    [SerializeField] private List<GameObject> firstOnboardingViewObjects;
+    [SerializeField] private List<GameObject> secondOnboardingViewObjects;
 
-    [Header("Panels")]
-    [SerializeField] private GoalView initialView;
+    [Header("Settings")]
+    [SerializeField] private GoalView currentView;
+
+    private bool _showOnboarding;
+    private const string FirstLaunchKey = "FirstLaunch";
     
-    private bool _isAllGoalsViewOpen;
+    private void Awake()
+    {
+        _showOnboarding = !PlayerPrefs.HasKey(FirstLaunchKey);
+    }
 
     private void Start()
     {
@@ -45,12 +56,15 @@ public class GoalsViewController : MonoBehaviour
 
     private void Initialize()
     {
-        if (initialView == GoalView.Calendar)
+        if (_showOnboarding)
         {
-            ShowCalendarView();
+            topIndicatorsBar.SetActive(false);
+            ShowOnboarding();
             return;
         }
-        ShowAllGoalsView();
+        topIndicatorsBar.SetActive(true);
+        HideOnboarding();
+        ShowCalendarView();
     }
 
     private void OnEnable()
@@ -69,55 +83,54 @@ public class GoalsViewController : MonoBehaviour
         display.OnDelete.RemoveListener(DeleteGoal);
     }
 
-    public void ShowAllGoalsView()
-    {
-        displayBar.SetActive(false);
-        
-        allGoalsInitialPanel.SetActive(true);
-        emptyAllGoalsPanel.SetActive(false);
-        emptyGoalsPanel.SetActive(false);
-        
-        SwitchMainMenuView(false);
-        
-        display.Clear();
-    }
-
     public void ShowCalendarView()
     {
+        mainMenuView.SetActive(true);
+        
         SwitchMainMenuView(true);
-        allGoalsInitialPanel.SetActive(false);
-        emptyAllGoalsPanel.SetActive(false);
+        nothingWasFoundPanel.SetActive(false);
         DisplayGoalsByDate(calendar.SelectedDay.DateTime);
     }
 
-    private void SwitchMainMenuView(bool showCalendar)
+    public void ShowAllGoalsView()
     {
-        foreach (var viewObject in calendarViewObjects)
-        {
-            viewObject.SetActive(showCalendar);
-        }
+        mainMenuView.SetActive(true);
+        nothingWasFoundPanel.SetActive(false);
+        SwitchMainMenuView(false);
         
-        foreach (var viewObject in allGoalsViewObjects)
-        {
-            viewObject.SetActive(!showCalendar);
-        }
-        
-        //_isAllGoalsViewOpen = !showCalendar; 
+        DisplayAllGoals();
     }
 
     public void DisplayGoalsBySearch(GoalData searchPattern)
     {
         var goals = repository.GetGoalsByPattern(searchPattern);
-        var goalsExists = goals.Count != 0;
         
-        displayBar.SetActive(goalsExists);
-        emptyAllGoalsPanel.SetActive(!goalsExists);
-        allGoalsInitialPanel.SetActive(false);
+        // Вернулось null, поле поиска пустое и ни одна категория не выбрана или не валиден
+        if (goals == null)
+        {
+            // Показать все существующие цели
+            DisplayAllGoals();
+            return;
+        }
+        
+        // Поля валидны, но поиск не дал результатов
+        if (goals.Count == 0)
+        {
+            displayBar.SetActive(false);
+            nothingWasFoundPanel.SetActive(true);
+            emptyGoalsPanel.SetActive(false);
+            return;
+        }
+        
+        // Поля валидны, поиск дал результаты
+        nothingWasFoundPanel.SetActive(false);
+        displayBar.SetActive(true);
         
         display.Display(goals);
     }
+
+    #region InputFormMethods
     
-    // МЕТОДЫ ИНПУТ ФОРМЫ
     public void ShowGoalForm()
     {
         inputForm.Clear();
@@ -134,39 +147,95 @@ public class GoalsViewController : MonoBehaviour
 
     public void SaveAndCloseGoalForm(GoalData goal)
     {
-        // Сохранение цели в репозитории
+        // Сохраненить новую цель
         repository.SaveGoal(goal);
         
-        // Скрыть и очистить форму
+        // Скрыть форму
         CloseGoalForm();
+        
+        // Обновить 
         
         DisplayGoalsByDate(calendar.SelectedDay.DateTime);
     }
     
-    private void DeleteGoal(GoalData goal)
+    #endregion
+
+    /// <summary>
+    /// Закрывает онбоардинг панель, а также делает пометку в PlayerPrefs что первый запуск приложения был 
+    /// </summary>
+    public void HideOnboarding()
     {
-        GoalsRepository.DeleteGoal(goal.FilePath);
-        DisplayGoalsByDate(goal.Date);
+        PlayerPrefs.SetString(FirstLaunchKey, "false");
+        topIndicatorsBar.SetActive(true);
+        foreach (var viewObject in firstOnboardingViewObjects)
+        {
+            viewObject.SetActive(false);
+        }
+        foreach (var viewObject in secondOnboardingViewObjects)
+        {
+            viewObject.SetActive(false);
+        }
+    }
+
+    private void ShowOnboarding()
+    {
+        foreach (var viewObject in firstOnboardingViewObjects)
+        {
+            viewObject.SetActive(true);
+        }
+    }
+
+    private void DisplayAllGoals()
+    {
+        var allGoals = repository.GetAllGoals();
+        DisplayGoals(allGoals);
     }
     
     private void DisplayGoalsByDate(DateTime date)
     {
         var goals = repository.GetGoalsByDate(date);
-        
-        var goalsExists = goals.Count != 0; 
-        
-        displayBar.SetActive(goalsExists);
+        DisplayGoals(goals);
+    }
 
-        if (_isAllGoalsViewOpen)
+    private void DisplayGoals(List<GoalData> goals)
+    {
+        display.Clear();
+        nothingWasFoundPanel.SetActive(false);
+        if (goals.Count == 0)
         {
-            emptyAllGoalsPanel.SetActive(!goalsExists);
+            displayBar.SetActive(false);
+            emptyGoalsPanel.SetActive(true);
+            return;
         }
-        else
+        displayBar.SetActive(true);
+        emptyGoalsPanel.SetActive(false);
+        display.Display(goals);
+    }
+    
+    private void SwitchMainMenuView(bool showCalendar)
+    {
+        currentView = showCalendar ? GoalView.Calendar : GoalView.AllGoals;
+        foreach (var viewObject in calendarViewObjects)
         {
-            emptyGoalsPanel.SetActive(!goalsExists);
+            viewObject.SetActive(showCalendar);
         }
         
-        display.Display(goals);
+        foreach (var viewObject in allGoalsViewObjects)
+        {
+            viewObject.SetActive(!showCalendar);
+        }
+    }
+    
+    private void DeleteGoal(GoalData goal)
+    {
+        GoalsRepository.DeleteGoal(goal.FilePath);
+
+        if (currentView == GoalView.Calendar)
+        {
+            DisplayGoalsByDate(goal.Date);
+            return;
+        }
+        goalsSearch.Search();
     }
     
     private void OpenFormForEditingGoal(GoalData goal)

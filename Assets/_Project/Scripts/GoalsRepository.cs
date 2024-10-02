@@ -72,6 +72,11 @@ public class GoalsRepository : MonoBehaviour
         return goalList.ToList();
     }
 
+    /// <summary>
+    /// Если и title и category навалидны, возвращает все цели
+    /// </summary>
+    /// <param name="searchPattern"></param>
+    /// <returns></returns>
     public List<GoalData> GetGoalsByPattern(GoalData searchPattern)
     {
         var title = searchPattern.Title;
@@ -95,7 +100,12 @@ public class GoalsRepository : MonoBehaviour
         {
             return GetGoalsByTitle(title);
         }
+        
+        return null;
+    }
 
+    public List<GoalData> GetAllGoals()
+    {
         return LoadGoals().ToList();
     }
 

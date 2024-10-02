@@ -15,8 +15,7 @@ public class GoalsSearch : MonoBehaviour
     }
 
     public void DeselectTag()
-    { 
-        // TODO Здесь имеется в виду убрать селект вообще с какого либо тега. То есть поиск по тегу не будет осуществляться
+    {
         selectedTag = null;
         Search();
     }
