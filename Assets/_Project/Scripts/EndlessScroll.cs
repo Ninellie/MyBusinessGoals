@@ -20,14 +20,17 @@ public class EndlessScroll : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private UnityEvent<Side> onShift;
 
     private RectTransform _content;
-    private RectTransform _viewport;
     private float _spacing;
     private bool _dragging;
+    private float _contentPosX;
+    private RectTransform _firstChild;
+    private RectTransform _lastChild;
+    private float _rightBorder;
+    private float _leftBorder;
     
     private void Awake()
     {
         _content = scrollRect.content;
-        _viewport = scrollRect.viewport;
         _spacing = contentLayoutGroup.spacing;
     }
 
@@ -45,23 +48,34 @@ public class EndlessScroll : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         {
             return;
         }
-        // TODO После драга можно вызывать функцию которая вычислит насколько сдвинулся контент от середины и заполнит.
-        // Если драг не происходит, то отслеживать отклонение на левый элемент вправо и на правый влево 
-        var viewportHalf = _viewport.rect.width / 2;
-        var rightContentPos = _content.rect.xMax - viewportHalf; 
-        var contentX = _content.anchoredPosition.x;
         
-        if (contentX < -rightContentPos)
+        while (_contentPosX < _leftBorder)
         {
+            UpdateData();
             ShiftFrom(Side.Left);
-            return;
         }
 
-        if (contentX > rightContentPos)
+        while (_contentPosX > _rightBorder)
         {
+            UpdateData();
             ShiftFrom(Side.Right);
         }
-    } 
+    }
+
+    private void UpdateData()
+    {
+        _contentPosX = _content.anchoredPosition.x; 
+        _firstChild = _content.GetChild(0) as RectTransform;
+        var elementsCount = _content.childCount;
+        _lastChild = _content.GetChild(elementsCount - 1) as RectTransform;
+        if (_firstChild == null || _lastChild == null)
+        {
+            Debug.LogWarning("Content has no child with RectTransform component");
+            return;
+        }
+        _rightBorder = _firstChild.rect.width;
+        _leftBorder = _lastChild.rect.width;
+    }
     
     private void ShiftFrom(Side side)
     {
@@ -85,14 +99,10 @@ public class EndlessScroll : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         if (side == Side.Left)
         {
-            var firstElement = _content.GetChild(0) as RectTransform; 
-            firstElement!.SetAsLastSibling();
-            return firstElement;
+            _firstChild!.SetAsLastSibling();
+            return _firstChild;
         }
-        
-        var elementsCount = _content.childCount;
-        var lastElement = _content.GetChild(elementsCount - 1) as RectTransform;
-        lastElement!.SetAsFirstSibling();
-        return lastElement;
+        _lastChild!.SetAsFirstSibling();
+        return _lastChild;
     }
 }
