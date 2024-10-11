@@ -17,7 +17,7 @@ public class EndlessScroll : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private HorizontalOrVerticalLayoutGroup contentLayoutGroup;
-    [SerializeField] public UnityEvent<RectTransform> onShift;
+    [SerializeField] public UnityEvent<GameObject> onShift;
 
     private RectTransform _content;
     private float _spacing;
@@ -49,6 +49,12 @@ public class EndlessScroll : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             return;
         }
         UpdateData();
+        
+        if (_leftBorder - _rightBorder == 0)
+        {
+            return;
+        }
+        
         while (_contentPosX < _leftBorder)
         {
             ShiftFrom(Side.Left);
@@ -74,7 +80,7 @@ public class EndlessScroll : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             return;
         }
         _rightBorder = _firstChild.rect.width;
-        _leftBorder = _lastChild.rect.width;
+        _leftBorder = -_lastChild.rect.width;
     }
     
     private void ShiftFrom(Side side)
@@ -92,7 +98,7 @@ public class EndlessScroll : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             _content.anchoredPosition -= new Vector2(translation, 0);
         }
         
-        onShift.Invoke(shiftedElement);
+        onShift.Invoke(shiftedElement.gameObject);
     }
 
     private RectTransform ShiftContentElementFrom(Side side)
