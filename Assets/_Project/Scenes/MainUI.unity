@@ -1589,6 +1589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 77736481}
+  - component: {fileID: 77736485}
   - component: {fileID: 77736484}
   - component: {fileID: 77736483}
   - component: {fileID: 77736482}
@@ -1668,7 +1669,7 @@ MonoBehaviour:
   m_Content: {fileID: 1270156587}
   m_Horizontal: 1
   m_Vertical: 0
-  m_MovementType: 1
+  m_MovementType: 0
   m_Elasticity: 0.05
   m_Inertia: 1
   m_DecelerationRate: 0.135
@@ -1681,6 +1682,23 @@ MonoBehaviour:
   m_HorizontalScrollbarSpacing: 0
   m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &77736485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77736480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cea4674751c45d0aab8a9d15a4d010b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollRect: {fileID: 77736484}
+  contentLayoutGroup: {fileID: 1270156590}
+  onShift:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &80800370
@@ -9497,9 +9515,9 @@ MonoBehaviour:
   itemsCount: 31
   dateComponentPrefab: {fileID: 6304431845226611799, guid: 1d9f78b07561a0247a34fa52dd915730, type: 3}
   content: {fileID: 1270156587}
+  endlessScroll: {fileID: 77736485}
   unselectedDayColors: {fileID: 11400000, guid: 5c7d74c905c889c4d88c348bf7d4f904, type: 2}
   selectedDayColors: {fileID: 11400000, guid: 8ea6798bff67e0b4fa36bf5e93641cd9, type: 2}
-  items: []
   onDayClick:
     m_PersistentCalls:
       m_Calls: []
@@ -28254,7 +28272,7 @@ MonoBehaviour:
   m_Content: {fileID: 191964058}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 0
   m_Elasticity: 0.05
   m_Inertia: 1
   m_DecelerationRate: 0.135
